@@ -1,0 +1,40 @@
+;; -*- emacs-lisp -*- <19/06/08 13:16:21 /Users/tastolfi/.emacs.d/tramp>
+;; Tramp connection history.  Don't change this file.
+;; You can delete it, forcing Tramp to reapply the checks.
+
+((["scp" nil "tastolfi.aka.corp.amazon.com" nil nil]
+  ("uname" "Linux 4.9.137-0.1.ac.218.74.329.metal1.x86_64")
+  ("locale" "LC_ALL=en_US.utf8")
+  ("test" "test")
+  ("remote-path"
+   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin"))
+  ("remote-shell" "/bin/sh")
+  ("readlink" "\\readlink")
+  ("stat" "\\stat")
+  ("file-exists" "test -e")
+  ("perl-file-spec" t)
+  ("perl-cwd-realpath" t)
+  ("perl" "\\perl")
+  ("git" "\\git")
+  ("ls" "/bin/ls --color=never")
+  ("ls-dired" t)
+  ("id" "/usr/bin/id")
+  ("gid-integer" 100)
+  ("gid-string" "amazon")
+  ("env-u-option" t))
+ (["ssh" nil "tastolfi.aka.corp.amazon.com" nil nil]
+  ("uname" "Linux 4.9.93-0.1.ac.178.67.327.metal1.x86_64")
+  ("locale" "LC_ALL=en_US.utf8")
+  ("test" "test")
+  ("remote-path"
+   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin"))
+  ("remote-shell" "/bin/sh")
+  ("perl-file-spec" t)
+  ("perl-cwd-realpath" t)
+  ("perl" "\\perl")
+  ("~" "/home/tastolfi")
+  ("readlink" "\\readlink")
+  ("stat" "\\stat")
+  ("file-exists" "test -e")
+  ("id" "/usr/bin/id")
+  ("gid-integer" 100)))

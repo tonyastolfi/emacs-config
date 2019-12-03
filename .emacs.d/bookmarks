@@ -1,0 +1,20 @@
+;;;; Emacs Bookmark Format Version 1 ;;;;
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("test_fail_3"
+ (filename . "~/j4/procurify_dream_no_lb_develop/test_2.log")
+ (front-context-string . "\n    <{}>\n      ")
+ (rear-context-string . " but was:<0> in:")
+ (position . 1472029))
+("test_fail_2"
+ (filename . "~/j4/procurify_dream_no_lb_develop/test_2.log")
+ (front-context-string . "\n    <{}>\n      ")
+ (rear-context-string . " but was:<0> in:")
+ (position . 1085833))
+("test_fail_1"
+ (filename . "~/j4/procurify_dream_no_lb_develop/test_2.log")
+ (front-context-string . "\n    <{}>\n      ")
+ (rear-context-string . " but was:<0> in:")
+ (position . 703014))
+)
