@@ -6,23 +6,43 @@
    t)
   (package-initialize))
 
-(add-to-list 'load-path "~/.emacs_load_path")
-
 ;(require 'package)
 ;(add-to-list 'package-archives
 ;             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 ;(package-initialize)
 
-(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono-10"))
+(add-to-list 'default-frame-alist '(font . "Bitstream Vera Sans Mono-12"))
 
-					;(toggle-frame-maximized)
-
-					;(set-face-attribute 'default t :font "Bitstream Vera Sans Mono-10")
 (setq default-frame-alist
-      '((font . "Bitstream Vera Sans Mono-11")
-        (width . 234)
-	(height . 77)))
+      '((font . "Bitstream Vera Sans Mono-12")
+        (width . 260)
+	(height . 83)))
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(ansi-color-names-vector
+   ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
+ '(column-number-mode t)
+ '(custom-enabled-themes (quote (reverse)))
+ '(custom-safe-themes
+   (quote
+    ("77515a438dc348e9d32310c070bfdddc5605efc83671a159b223e89044e4c4f1" "42142d1cb87aaca168ef08ff4cf0dac37d15ad2bac61f4f1487da8ad5378a73f" "0717ec4adc3308de8cdc31d1b1aef17dc61003f09cb5f058f77d49da14e809cf" default)))
+ '(explicit-bash-args (quote ("--login" "--noediting" "-i")))
+ '(js-indent-level 2)
+ '(package-selected-packages
+   (quote
+    (cmake-mode toml-mode rust-mode rtags shackle elm-mode protobuf-mode markdown-mode yaml-mode scala-mode nose magit groovy-mode gradle-mode google-c-style git-blamed elpy dockerfile-mode docker dired-k clang-format anaconda-mode)))
+ '(rtags-bury-buffer-function (quote do-not-bury-or-delete))
+ '(rtags-results-buffer-other-window t)
+ '(rtags-split-window-function (quote do-not-split-window))
+ '(tool-bar-mode nil))
+
+(global-set-key (kbd "C-x !") 'shell)
+
+; ------------------------------------------------------------------------------
 ; Set default compilation directory to the closest git root
 (defun chomp-end (str)
       "Chomp tailing whitespace from STR."
@@ -35,8 +55,9 @@
           (chomp-end (shell-command-to-string "git rev-parse --show-toplevel || pwd"))))
     (call-interactively #'compile)))
 
-(global-set-key (kbd "C-x !") 'shell)
 (global-set-key (kbd "C-x c") 'compile-in-git-root)
+;(global-set-key (kbd "C-x c") 'compile)
+; ------------------------------------------------------------------------------
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -48,41 +69,46 @@
  '(my-trailing-space-face ((((class color)) (:background "gray10"))) t))
 
 
-(require 'gradle-mode)
-(gradle-mode 1)
+;; === Rust Stuff ======================================================
+;;
+(require 'rust-mode)
+(add-hook 'rust-mode-hook
+          (lambda () (setq indent-tabs-mode nil)))
+(setq rust-format-on-save t)
 
-(require 'nose)
-(add-hook 'python-mode-hook (lambda () (nose-mode t)))
+;; === Gradle ==========================================================
+;;
+;(require 'gradle-mode)
+;(gradle-mode 1)
+
+;; === Python ==========================================================
+;(require 'nose)
+;(add-hook 'python-mode-hook (lambda () (nose-mode t)))
+
+;; === Whitespace ======================================================
+;; Make trailing whitespace, lines too long look very obvious.
 
 (require 'whitespace)
 (setq whitespace-style '(face empty tabs lines-tail trailing))
 ;(global-whitespace-mode t)
+(global-set-key (kbd "s-SPC") 'whitespace-mode) ; shift-cmd-[spacebar]
 
-                                        ; Point out long lines
-;(setq orig-font-lock-keywords font-lock-keywords)
-;(add-hook 'font-lock-mode-hook
-;            (function
-;             (lambda ()
-;               (setq font-lock-keywords
-;                     (append orig-font-lock-keywords
-;                             '(("\t+" (0 'my-tab-face t))
-;                               ("^.\\{81,\\}$" (0 'my-long-line-face t))
-;                               ("[ \t]+$"      (0 'my-trailing-space-face t))))))))
-
-(global-set-key (kbd "s-SPC") 'whitespace-mode)
+;; === Indentation Settings ============================================
 
 (setq-default indent-tabs-mode nil)
 (add-hook 'java-mode-hook (lambda ()
-			    (setq c-basic-offset 4)))
+			    (setq c-basic-offset 2)))
 (add-hook 'python-mode-hook (lambda ()
 			    (setq c-basic-offset 4)))
 (add-hook 'python-mode-hook (lambda ()
 			    (setq python-indent-offset 4)))
 (add-hook 'javascript-mode-hook (lambda ()
-                                  (setq js-indent-level 4)))
+                                  (setq js-indent-level 2)))
 (setq c-basic-offset 4)
 (setq-default c-basic-offset 4)
 (setq column-number-mode t)
+
+;; === Clang-Format ====================================================
 
 (global-set-key (kbd "C-M-]") 'clang-format-region)
 (global-set-key (kbd "C-}") 'clang-format-buffer)
@@ -92,8 +118,8 @@
 
 (defun custom-cc-before-save-hook ()
   (when (or (eq major-mode 'c++-mode)
-            (eq major-mode 'cc-mode))
-            ;(eq major-mode 'c-mode))
+            (eq major-mode 'cc-mode)
+            (eq major-mode 'c-mode))
     (clang-format-buffer)))
 
 ; (remove-hook 'before-save-hook #'clang-format-region)
@@ -158,29 +184,30 @@
 (setq split-height-threshold 4000)
 (setq split-width-threshold 4000)
 
-; Protobuf mode
+;; === Protobuf mode ===================================================
+
 (require 'protobuf-mode)
 
 (defconst my-protobuf-style
-  '((c-basic-offset . 4)
+  '((c-basic-offset . 2)
     (indent-tabs-mode . nil)))
 
 (add-hook 'protobuf-mode-hook
   (lambda () (c-add-style "my-style" my-protobuf-style t)))
 
-(add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-(add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
-(add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
+;; === RTags config ====================================================
 
-; RTags config
+;(add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+;(add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+;(add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
 
-(defun use-rtags (&optional useFileManager)
-  (and (rtags-executable-find "rc")
-       (cond ((not (gtags-get-rootpath)) t)
-             ((and (not (eq major-mode 'c++-mode))
-                   (not (eq major-mode 'c-mode))) (rtags-has-filemanager))
-             (useFileManager (rtags-has-filemanager))
-             (t (rtags-is-indexed)))))
+;(defun use-rtags (&optional useFileManager)
+;  (and (rtags-executable-find "rc")
+;       (cond ((not (gtags-get-rootpath)) t)
+;             ((and (not (eq major-mode 'c++-mode))
+;                   (not (eq major-mode 'c-mode))) (rtags-has-filemanager))
+;             (useFileManager (rtags-has-filemanager))
+;             (t (rtags-is-indexed)))))
 
 (define-key c-mode-base-map (kbd "M-.") (function rtags-find-symbol-at-point))
 (define-key global-map      (kbd "M-.") (function rtags-find-symbol-at-point))
@@ -210,10 +237,10 @@
 (define-key c-mode-base-map [C-S-mouse-1] (function rtags-find-virtuals-at-point))
 (define-key global-map      [C-S-mouse-1] (function rtags-find-virtuals-at-point))
 
-(setq rtags-autostart-diagnostics t)
+;(setq rtags-autostart-diagnostics t)
 
-(defun do-not-split-window (&optional window size side pixelwise) ret)
-(defun do-not-bury-or-delete () ret)
+;(defun do-not-split-window (&optional window size side pixelwise) ret)
+;(defun do-not-bury-or-delete () ret)
 
 ; Auto-compile config
 
@@ -223,48 +250,17 @@
 (auto-compile-on-load-mode)
 (auto-compile-on-save-mode)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector
-   ["black" "#d55e00" "#009e73" "#f8ec59" "#0072b2" "#cc79a7" "#56b4e9" "white"])
- '(column-number-mode t)
- '(custom-enabled-themes (quote (reverse)))
- '(custom-safe-themes
-   (quote
-    ("77515a438dc348e9d32310c070bfdddc5605efc83671a159b223e89044e4c4f1" "42142d1cb87aaca168ef08ff4cf0dac37d15ad2bac61f4f1487da8ad5378a73f" "0717ec4adc3308de8cdc31d1b1aef17dc61003f09cb5f058f77d49da14e809cf" default)))
- '(explicit-bash-args (quote ("--login" "--noediting" "-i")))
- '(js-indent-level 4)
- '(package-selected-packages
-   (quote
-    (cmake-mode rtags shackle elm-mode protobuf-mode markdown-mode yaml-mode scala-mode nose magit groovy-mode gradle-mode google-c-style git-blamed elpy dockerfile-mode docker dired-k clang-format anaconda-mode)))
- '(rtags-bury-buffer-function (quote do-not-bury-or-delete))
- '(rtags-results-buffer-other-window t)
- '(rtags-split-window-function (quote do-not-split-window))
- '(template-auto-insert (quote query))
- '(template-use-package t nil (template))
- '(tool-bar-mode nil))
-
-; Overrides for EFS conventions
-(setq-default c-basic-offset 4)
-
-; GIT status
 (global-set-key (kbd "C-x g") 'magit-status)
 
-(require 'template)
-(template-initialize)
 
-(tool-bar-mode -1)
-
+; ------------------------------------------------------------------------------
 (defun timestamp ()
    (interactive)
    (insert (format-time-string "%Y-%m-%dT%H:%M:%S")))
 
 (defun todo ()
    (interactive)
-   (insert (format-time-string "TODO [tastolfi %Y-%m-%d] EFS-??? ")))
+   (insert (format-time-string "TODO [tastolfi %Y-%m-%d] ")))
 
 (global-set-key (kbd "C-c t") 'todo)
 
@@ -334,6 +330,35 @@
     (insert "inline std::ostream &operator<<(std::ostream &out, const " name " &t) { return out << t; }")
     (clang-format-buffer)))
 
-(defun anchor ()
+(defun hpp ()
   (interactive)
-  (insert (concat "<a name=\"" (read-string "Enter anchor name: ") "\"/>")))
+  (let ((ns (read-string "namespace: "))
+        (modname (read-string "module name: ")))
+    (insert "#pragma once\n"
+            "#ifndef " (upcase ns) "_" (upcase modname) "_HPP\n"
+            "#define " (upcase ns) "_" (upcase modname) "_HPP\n"
+            "\n"
+            "namespace " (downcase ns) " {\n"
+            "} // " (downcase ns) "\n"
+            "\n"
+            "#endif // " (upcase ns) "_" (upcase modname) "_HPP\n")
+        (clang-format-buffer)))
+
+(defun test-cpp ()
+  (interactive)
+  (let ((ns (read-string "namespace: "))
+        (modname (read-string "module name: ")))
+    (insert "#include <" (downcase ns) "/" (downcase modname) ".hpp>\n"
+            "//\n"
+            "#include <" (downcase ns) "/" (downcase modname) ".hpp>\n"
+            "\n"
+            "#include <gtest/gtest.h>\n"
+            "#include <gmock/gmock.h>\n"
+            "\n"
+            "namespace {\n"
+            "\n"
+            "TEST(" (capitalize modname) ", Test) {\n}\n"
+            "\n"
+            "} // namespace\n")
+        (clang-format-buffer)))
+
